@@ -6,10 +6,8 @@ class SplashScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Trigger navigation after 3 seconds
     Future.delayed(Duration(seconds: 3), () {
-      // ignore: use_build_context_synchronously
-      Navigator.pushReplacementNamed(context, '/login');
+      Navigator.pushReplacementNamed(context, '/onboarding');
     });
 
     return Scaffold(
