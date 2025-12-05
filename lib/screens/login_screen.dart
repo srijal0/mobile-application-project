@@ -39,7 +39,6 @@ class LoginScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 15),
 
-                // Password Field
                 TextField(
                   obscureText: true,
                   decoration: InputDecoration(
