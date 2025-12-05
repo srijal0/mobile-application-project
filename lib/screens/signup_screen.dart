@@ -51,7 +51,7 @@ class SignupScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 15),
 
-                
+                // Password Field
                 TextField(
                   obscureText: true,
                   decoration: InputDecoration(
