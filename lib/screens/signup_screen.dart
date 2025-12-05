@@ -21,7 +21,7 @@ class SignupScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 40),
 
-                
+                // Full Name Field
                 TextField(
                   decoration: InputDecoration(
                     hintText: 'Enter your full name',
