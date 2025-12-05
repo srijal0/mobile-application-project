@@ -45,6 +45,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             ],
           ),
 
+          // Dot Indicators + Button
           Positioned(
             bottom: 40,
             left: 0,
