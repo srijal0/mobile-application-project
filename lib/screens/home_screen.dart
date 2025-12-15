@@ -7,8 +7,8 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Trendora"),
-        backgroundColor: Colors.amber,
+     
+      
       ),
       body: const Center(
         child: Text(

@@ -12,7 +12,7 @@ class TrendoraApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Trendora',
+     
       debugShowCheckedModeBanner: false,
       initialRoute: '/',
       routes: {
