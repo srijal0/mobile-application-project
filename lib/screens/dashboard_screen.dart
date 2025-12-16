@@ -1,8 +1,9 @@
 import 'package:fashion_store_trendora/screens/bottom_screen/about_screen.dart';
 import 'package:fashion_store_trendora/screens/bottom_screen/cart_screen.dart';
+import 'package:fashion_store_trendora/screens/bottom_screen/home_screen.dart';
 import 'package:fashion_store_trendora/screens/bottom_screen/profile_screen.dart';
-import 'package:fashion_store_trendora/screens/home_screen.dart';
 import 'package:flutter/material.dart';
+
 
 
 class DashboardScreen extends StatefulWidget {
