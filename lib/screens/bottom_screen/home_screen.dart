@@ -1,28 +1,219 @@
 import 'package:flutter/material.dart';
+import 'cart_screen.dart';
+import 'product_detail_screen.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  String searchQuery = '';
+
   // ================= PRODUCT DATA =================
-  static final List<Map<String, dynamic>> products = [
-    {'image': 'assets/images/picture1.png', 'name': 'Campus Muse', 'price': 'Rs.3000', 'isNew': true},
-    {'image': 'assets/images/picture2.png', 'name': 'Leap Theory', 'price': 'Rs.5000', 'isNew': true},
-    {'image': 'assets/images/picture3.png', 'name': 'Stripped V-Neck', 'price': 'Rs.4500', 'isNew': false},
-    {'image': 'assets/images/picture4.png', 'name': 'Zip-up Hoodie', 'price': 'Rs.2000', 'isNew': true},
-    {'image': 'assets/images/picture5.png', 'name': 'Hoodie', 'price': 'Rs.3000', 'isNew': false},
-    {'image': 'assets/images/picture6.png', 'name': 'Shirt', 'price': 'Rs.4500', 'isNew': false},
-    {'image': 'assets/images/picture7.png', 'name': 'Frock', 'price': 'Rs.6500', 'isNew': false},
+  final List<String> productImages = [
+    'assets/images/picture1.png',
+    'assets/images/picture2.png',
+    'assets/images/picture3.png',
+    'assets/images/picture4.png',
+    'assets/images/picture5.png',
+    'assets/images/picture6.png',
+    'assets/images/picture7.png',
   ];
 
+  final List<String> productNames = [
+    'Campus Muse',
+    'Leap Theory',
+    'Stripped V-Neck',
+    'Zip-up Hoodie',
+    'Hoodie',
+    'Shirt',
+    'Frock',
+  ];
+
+  final List<double> productPrices = [
+    3000,
+    5000,
+    4500,
+    2000,
+    3000,
+    4500,
+    6500,
+  ];
+
+  final List<bool> productIsNew = [
+    true,
+    true,
+    false,
+    true,
+    false,
+    false,
+    false,
+  ];
+
+  final Map<String, List<int>> sections = {
+    "Categories": [0, 1, 2, 3],
+    "Best Sellers": [1, 2, 4],
+    "New Arrivals": [],
+  };
+
+  @override
+  void initState() {
+    super.initState();
+    sections["New Arrivals"] = List.generate(productIsNew.length, (i) => i)
+        .where((i) => productIsNew[i])
+        .toList();
+  }
+
+  // ================= HORIZONTAL SECTION =================
+  Widget horizontalSection(String title, List<int> indexes) {
+    final filteredData = <Map<String, dynamic>>[];
+
+    for (int i in indexes) {
+      if (productNames[i]
+          .toLowerCase()
+          .contains(searchQuery.toLowerCase())) {
+        filteredData.add({
+          'image': productImages[i],
+          'name': productNames[i],
+          'price': productPrices[i],
+          'isNew': productIsNew[i],
+        });
+      }
+    }
+
+    if (filteredData.isEmpty) return const SizedBox();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: Text(
+            title,
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        SizedBox(
+          height: 250,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: filteredData.length,
+            itemBuilder: (context, index) {
+              final product = filteredData[index];
+
+              return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => ProductDetailScreen(
+                        image: product['image'],
+                        name: product['name'],
+                        price: product['price'],
+                        isNew: product['isNew'],
+                      ),
+                    ),
+                  );
+                },
+                child: Container(
+                  width: 160,
+                  margin: const EdgeInsets.only(right: 12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // IMAGE
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
+                        child: Image.asset(
+                          product['image'],
+                          width: 160,
+                          height: 160,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+
+                      // NEW + CART
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          if (product['isNew'])
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 2,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.orange,
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: const Text(
+                                "New",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const CartScreen(),
+                                ),
+                              );
+                            },
+                            child: const CircleAvatar(
+                              radius: 16,
+                              backgroundColor: Colors.black,
+                              child: Icon(
+                                Icons.shopping_cart,
+                                size: 18,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 6),
+                      Text(
+                        product['name'],
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        "Rs.${product['price'].toInt()}",
+                        style: const TextStyle(color: Colors.grey),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  // ================= UI =================
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // TOP BAR
               Row(
@@ -38,9 +229,8 @@ class HomeScreen extends StatelessWidget {
 
               const SizedBox(height: 20),
 
-              // TITLE
               const Text(
-                "Explore stylish furniture for you",
+                "Explore stylish clothes for you",
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
@@ -49,64 +239,31 @@ class HomeScreen extends StatelessWidget {
 
               const SizedBox(height: 20),
 
-              // SEARCH + FILTER
-              Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      decoration: InputDecoration(
-                        hintText: "Search",
-                        prefixIcon: const Icon(Icons.search),
-                        filled: true,
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide.none,
-                        ),
-                      ),
-                    ),
+              // SEARCH
+              TextField(
+                onChanged: (value) {
+                  setState(() => searchQuery = value);
+                },
+                decoration: InputDecoration(
+                  hintText: "Search",
+                  prefixIcon: const Icon(Icons.search),
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
                   ),
-                  const SizedBox(width: 10),
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.black,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: const Icon(Icons.tune, color: Colors.white),
-                  ),
-                ],
+                ),
               ),
 
               const SizedBox(height: 20),
 
-              // BEST OFFER TITLE
-              const Text(
-                "Best offer",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-
-              const SizedBox(height: 10),
-
-              // GRID PRODUCT CARDS (2 per row)
+              // SECTIONS
               Expanded(
-                child: GridView.builder(
-                  itemCount: products.length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2, // 2 products per row
-                    mainAxisSpacing: 16,
-                    crossAxisSpacing: 16,
-                    childAspectRatio: 0.7, // adjust height/width
-                  ),
-                  itemBuilder: (context, index) {
-                    final product = products[index];
-                    return ProductCard(
-                      image: product['image'],
-                      name: product['name'],
-                      price: product['price'],
-                      isNew: product['isNew'],
-                    );
-                  },
+                child: ListView(
+                  children: sections.entries
+                      .map((e) => horizontalSection(e.key, e.value))
+                      .toList(),
                 ),
               ),
             ],
@@ -115,114 +272,4 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
-}
-
-// ================= PRODUCT CARD =================
-class ProductCard extends StatelessWidget {
-  final String image;
-  final String name;
-  final String price;
-  final bool isNew;
-
-  const ProductCard({
-    super.key,
-    required this.image,
-    required this.name,
-    required this.price,
-    this.isNew = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // IMAGE
-          ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-            child: Image.asset(
-              image,
-              height: 120,
-              width: double.infinity,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) => Container(
-                height: 120,
-                color: Colors.grey.shade300,
-                child: const Center(
-                  child: Icon(Icons.image_not_supported, size: 40),
-                ),
-              ),
-            ),
-          ),
-
-          const SizedBox(height: 6),
-
-          // NEW LABEL + CART BUTTON
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                if (isNew)
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                    decoration: BoxDecoration(
-                      color: Colors.orange,
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    child: const Text(
-                      "New",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                const CircleAvatar(
-                  radius: 16,
-                  backgroundColor: Colors.black,
-                  child: Icon(Icons.shopping_cart, size: 18, color: Colors.white),
-                ),
-              ],
-            ),
-          ),
-
-          // PRODUCT NAME
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            child: Text(
-              name,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
-
-          // PRICE
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: Text(
-              price,
-              style: const TextStyle(color: Colors.grey),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-void main() {
-  runApp(const MaterialApp(home: HomeScreen()));
 }
