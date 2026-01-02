@@ -12,7 +12,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   String searchQuery = '';
 
-  // ================= PRODUCT DATA =================
   final List<String> productImages = [
     'assets/images/picture1.png',
     'assets/images/picture2.png',
@@ -67,14 +66,72 @@ class _HomeScreenState extends State<HomeScreen> {
         .toList();
   }
 
-  // ================= HORIZONTAL SECTION =================
+  Widget buildProductCard(Map<String, dynamic> product) {
+    return SizedBox(
+      width: 150,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Image.asset(
+              product['image'],
+              width: 150,
+              height: 100,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return const Icon(Icons.image_not_supported, size: 80, color: Colors.grey);
+              },
+            ),
+          ),
+          const SizedBox(height: 4),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              if (product['isNew'])
+                Flexible(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF38B120),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: const Text(
+                      "New",
+                      style: TextStyle(color: Colors.white, fontSize: 10),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ),
+              const CircleAvatar(
+                radius: 14,
+                backgroundColor: Color(0xFFDA1B2B),
+                child: Icon(Icons.shopping_cart, size: 16, color: Colors.white),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Text(
+            product['name'],
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+          ),
+          Text(
+            "Rs.${product['price'].toInt()}",
+            style: const TextStyle(color: Colors.grey, fontSize: 12),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget horizontalSection(String title, List<int> indexes) {
     final filteredData = <Map<String, dynamic>>[];
 
     for (int i in indexes) {
-      if (productNames[i]
-          .toLowerCase()
-          .contains(searchQuery.toLowerCase())) {
+      if (productNames[i].toLowerCase().contains(searchQuery.toLowerCase())) {
         filteredData.add({
           'image': productImages[i],
           'name': productNames[i],
@@ -89,157 +146,51 @@ class _HomeScreenState extends State<HomeScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          child: Text(
-            title,
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+        Text(
+          title,
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
         ),
+        const SizedBox(height: 8),
         SizedBox(
-          height: 250,
+          height: 190,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: filteredData.length,
-            itemBuilder: (context, index) {
-              final product = filteredData[index];
-
-              return GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => ProductDetailScreen(
-                        image: product['image'],
-                        name: product['name'],
-                        price: product['price'],
-                        isNew: product['isNew'],
-                      ),
-                    ),
-                  );
-                },
-                child: Container(
-                  width: 160,
-                  margin: const EdgeInsets.only(right: 12),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // IMAGE
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(16),
-                        child: Image.asset(
-                          product['image'],
-                          width: 160,
-                          height: 160,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-
-                      // NEW + CART
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          if (product['isNew'])
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 6,
-                                vertical: 2,
-                              ),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFF38B120), // Trendora green
-                                borderRadius: BorderRadius.circular(6),
-                              ),
-                              child: const Text(
-                                "New",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => const CartScreen(),
-                                ),
-                              );
-                            },
-                            child: const CircleAvatar(
-                              radius: 16,
-                              backgroundColor: Color(0xFFDA1B2B), // Trendora red
-                              child: Icon(
-                                Icons.shopping_cart,
-                                size: 18,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      const SizedBox(height: 6),
-                      Text(
-                        product['name'],
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        "Rs.${product['price'].toInt()}",
-                        style: const TextStyle(color: Colors.grey),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
+            itemBuilder: (context, index) => Padding(
+              padding: const EdgeInsets.only(right: 10),
+              child: buildProductCard(filteredData[index]),
+            ),
           ),
         ),
       ],
     );
   }
 
-  // ================= UI =================
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           child: Column(
             children: [
-              // TOP BAR
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: const [
-                  Icon(Icons.menu, size: 28),
+                  Icon(Icons.menu, size: 26),
                   CircleAvatar(
-                    radius: 20,
+                    radius: 18,
                     backgroundImage: AssetImage('assets/images/dp.png'),
                   ),
                 ],
               ),
-
-              const SizedBox(height: 20),
-
+              const SizedBox(height: 12),
               const Text(
                 "Explore stylish clothes for you",
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
-
-              const SizedBox(height: 20),
-
-              // SEARCH
+              const SizedBox(height: 12),
               TextField(
                 onChanged: (value) {
                   setState(() => searchQuery = value);
@@ -249,23 +200,17 @@ class _HomeScreenState extends State<HomeScreen> {
                   prefixIcon: const Icon(Icons.search),
                   filled: true,
                   fillColor: Colors.white,
+                  contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 12),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(10),
                     borderSide: BorderSide.none,
                   ),
                 ),
               ),
-
-              const SizedBox(height: 20),
-
-              // SECTIONS
-              Expanded(
-                child: ListView(
-                  children: sections.entries
-                      .map((e) => horizontalSection(e.key, e.value))
-                      .toList(),
-                ),
-              ),
+              const SizedBox(height: 12),
+              ...sections.entries
+                  .map((e) => horizontalSection(e.key, e.value))
+                  .toList(),
             ],
           ),
         ),
