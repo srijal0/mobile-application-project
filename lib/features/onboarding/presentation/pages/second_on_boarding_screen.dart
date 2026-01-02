@@ -1,5 +1,5 @@
 // lib/features/onboarding/presentation/pages/second_on_boarding_screen.dart
-//onboarding code
+//secondonboarding code
 import 'package:flutter/material.dart';
 import 'package:fashion_store_trendora/features/onboarding/presentation/pages/final_on_boarding_screen.dart';
 import 'package:fashion_store_trendora/core/widgets/my_button.dart';
