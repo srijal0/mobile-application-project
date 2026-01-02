@@ -1,4 +1,5 @@
 // lib/features/onboarding/presentation/pages/final_on_boarding_screen.dart
+//onboarding code
 import 'package:fashion_store_trendora/features/auth/presentation/view_model/auth_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
