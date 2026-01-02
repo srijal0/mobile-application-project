@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'login_screen.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -19,7 +20,10 @@ class _SignupScreenState extends State<SignupScreen> {
   void _signup() {
     if (_formKey.currentState!.validate()) {
       // All fields valid
-      Navigator.pushReplacementNamed(context, '/login');
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginScreen()),
+      );
     }
   }
 
@@ -88,13 +92,17 @@ class _SignupScreenState extends State<SignupScreen> {
 
                   const SizedBox(height: 20),
 
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  Wrap(
+                    alignment: WrapAlignment.center,
+                    spacing: 6,
                     children: [
                       const Text("Already have an account? "),
                       GestureDetector(
                         onTap: () {
-                          Navigator.pushReplacementNamed(context, '/login');
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (context) => const LoginScreen()),
+                          );
                         },
                         child: const Text(
                           "Sign In",

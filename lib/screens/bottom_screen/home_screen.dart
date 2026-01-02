@@ -150,7 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 vertical: 2,
                               ),
                               decoration: BoxDecoration(
-                                color: Colors.orange,
+                                color: const Color(0xFF38B120), // Trendora green
                                 borderRadius: BorderRadius.circular(6),
                               ),
                               child: const Text(
@@ -172,7 +172,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             },
                             child: const CircleAvatar(
                               radius: 16,
-                              backgroundColor: Colors.black,
+                              backgroundColor: Color(0xFFDA1B2B), // Trendora red
                               child: Icon(
                                 Icons.shopping_cart,
                                 size: 18,

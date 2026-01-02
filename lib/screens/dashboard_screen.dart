@@ -26,10 +26,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('This is dashboard'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-      ),
+     
 
       body: lstBottomScreen[_selectedIndex], // <-- Shows the correct page
 

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'signup_screen.dart';
+import 'dashboard_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -16,7 +18,10 @@ class _LoginScreenState extends State<LoginScreen> {
   void _login() {
     if (_formKey.currentState!.validate()) {
       // If validation passes → Dashboard
-      Navigator.pushReplacementNamed(context, '/dashboard');
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const DashboardScreen()),
+      );
     }
   }
 
@@ -106,20 +111,23 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   const SizedBox(height: 20),
 
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  Wrap(
+                    alignment: WrapAlignment.center,
+                    spacing: 6,
                     children: [
                       const Text("Don't have an account? "),
                       GestureDetector(
                         onTap: () {
-                          Navigator.pushReplacementNamed(context, '/signup');
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (context) => const SignupScreen()),
+                          );
                         },
                         child: const Text(
                           "Sign Up",
                           style: TextStyle(
-                            color: Colors.redAccent,
-                            fontWeight: FontWeight.bold,
-                            decoration: TextDecoration.underline,
+                            fontSize: 22,
+                            color: Color(0xFFFFAE37), // Trendora yellow
                           ),
                         ),
                       ),
