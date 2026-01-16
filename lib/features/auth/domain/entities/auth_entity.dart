@@ -1,4 +1,3 @@
-// lib/features/auth/domain/entities/auth_entity.dart
 import 'package:equatable/equatable.dart';
 
 class AuthEntity extends Equatable {

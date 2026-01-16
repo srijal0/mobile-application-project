@@ -1,7 +1,7 @@
-// lib/features/auth/data/datasources/auth_datasource.dart
+import 'package:fashion_store_trendora/features/auth/data/models/auth_api_model.dart';
 import 'package:fashion_store_trendora/features/auth/data/models/auth_hive_model.dart';
 
-abstract interface class IAuthDatasource {
+abstract interface class IAuthLocalDatasource {
   /// Register a new user in Hive
   Future<bool> register(AuthHiveModel model);
 
@@ -12,5 +12,11 @@ abstract interface class IAuthDatasource {
   Future<AuthHiveModel?> getCurrentUser();
 
   /// Logout the current user
+  Future<bool> logout();
+}
+abstract interface class IAuthRemoteDatasource {
+  Future<AuthApiModel> register(AuthApiModel model);
+  Future<AuthApiModel?> login(String email, String password);
+  Future<AuthApiModel?> getCurrentUser();
   Future<bool> logout();
 }

@@ -1,4 +1,3 @@
-// lib/features/auth/domain/usecases/login_usecase.dart
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fashion_store_trendora/core/usecases/app_usecase.dart';
