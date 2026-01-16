@@ -5,7 +5,7 @@ import 'package:fashion_store_trendora/features/auth/domain/usecases/logout_usec
 import 'package:fashion_store_trendora/features/auth/domain/usecases/get_current_user_usecase.dart';
 import 'package:fashion_store_trendora/features/auth/presentation/state/auth_state.dart';
 
-/// Riverpod provider for AuthViewModel
+
 final authViewModelProvider =
     NotifierProvider<AuthViewModel, AuthState>(() => AuthViewModel());
 
