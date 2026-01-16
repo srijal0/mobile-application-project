@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:fashion_store_trendora/features/auth/domain/entities/auth_entity.dart';
 
-/// Authentication status for Trendora
+
 enum AuthStatus {
   initial,
   loading,
