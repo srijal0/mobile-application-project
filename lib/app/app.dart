@@ -26,14 +26,13 @@
 //     );
 //   }
 // }
-
-// lib/app/app.dart
+import 'package:fashion_store_trendora/screens/dashboard_screen.dart';
+import 'package:fashion_store_trendora/screens/login_screen.dart';
 import 'package:fashion_store_trendora/screens/signup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:fashion_store_trendora/app/themes/theme_data.dart';
 import 'package:fashion_store_trendora/screens/splash_screen.dart';
-import 'package:fashion_store_trendora/features/auth/presentation/pages/login_screen.dart';
-import 'package:fashion_store_trendora/features/dashboard/presentation/pages/dashboard_screen.dart';
+
 
 class TrendoraApp extends StatelessWidget {
   const TrendoraApp({super.key});

@@ -1,4 +1,3 @@
-// lib/common/widgets/trendora_snackbar.dart
 import 'package:flutter/material.dart';
 
 void showTrendoraSnackBar({

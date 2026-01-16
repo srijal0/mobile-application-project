@@ -1,4 +1,3 @@
-// lib/app/theme/theme_data.dart
 import 'package:flutter/material.dart';
 
 ThemeData getTrendoraTheme() {

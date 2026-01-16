@@ -127,7 +127,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           "Sign Up",
                           style: TextStyle(
                             fontSize: 22,
-                            color: Color(0xFFFFAE37), // Trendora yellow
+                            color: Color.fromARGB(255, 255, 55, 65), 
                           ),
                         ),
                       ),

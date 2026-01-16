@@ -1,4 +1,3 @@
-// lib/features/auth/domain/usecases/register_usecase.dart
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fashion_store_trendora/core/usecases/app_usecase.dart';
@@ -26,7 +25,7 @@ class RegisterUsecaseParams extends Equatable {
     required this.fullName,
     required this.email,
     required this.username,
-    required this.password,
+    required this.password, required String phoneNumber, String? address,
   });
 
   @override

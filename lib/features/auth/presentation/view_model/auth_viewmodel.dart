@@ -1,4 +1,3 @@
-// lib/features/auth/presentation/view_model/auth_view_model.dart
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fashion_store_trendora/features/auth/domain/usecases/login_usecase.dart';
 import 'package:fashion_store_trendora/features/auth/domain/usecases/register_usecase.dart';
@@ -22,7 +21,7 @@ class AuthViewModel extends Notifier<AuthState> {
     _loginUsecase = ref.read(loginUseCaseProvider);
     _logoutUsecase = ref.read(logoutUsecaseProvider);
     _getCurrentUserUsecase = ref.read(getCurrentUserUsecaseProvider);
-    return const AuthState();
+    return AuthState.initial();
   }
 
   /// Register new user
@@ -31,36 +30,27 @@ class AuthViewModel extends Notifier<AuthState> {
     required String username,
     required String email,
     required String password,
+    required String phoneNumber,
+    required String? address,
   }) async {
-    state = state.copyWith(status: AuthStatus.loading);
+    state = AuthState.loading();
 
     final params = RegisterUsecaseParams(
       fullName: fullName,
-      email: email,
       username: username,
+      email: email,
       password: password,
+      phoneNumber: phoneNumber,
+      address: address,
     );
 
     final result = await _registerUsecase(params);
 
     result.fold(
-      (failure) => state = state.copyWith(
-        status: AuthStatus.error,
-        errorMessage: failure.message,
+      (failure) => state = AuthState.error(failure.message),
+      (_) => state = AuthState.registered(
+        "Registration successful",
       ),
-      (success) {
-        if (success) {
-          state = state.copyWith(
-            status: AuthStatus.registering,
-            successMessage: "Registration successful",
-          );
-        } else {
-          state = state.copyWith(
-            status: AuthStatus.error,
-            errorMessage: "Registration failed",
-          );
-        }
-      },
     );
   }
 
@@ -69,67 +59,44 @@ class AuthViewModel extends Notifier<AuthState> {
     required String email,
     required String password,
   }) async {
-    state = state.copyWith(status: AuthStatus.loading);
+    state = AuthState.loading();
 
-    final params = LoginUsecaseParams(email: email, password: password);
+    final params = LoginUsecaseParams(
+      email: email,
+      password: password,
+    );
+
     final result = await _loginUsecase(params);
 
     result.fold(
-      (failure) => state = state.copyWith(
-        status: AuthStatus.error,
-        errorMessage: failure.message,
-      ),
-      (entity) => state = state.copyWith(
-        status: AuthStatus.authenticated,
-        entity: entity,
-        successMessage: "Login successful",
-      ),
+      (failure) => state = AuthState.error(failure.message),
+      (entity) => state = AuthState.authenticated(entity),
     );
   }
 
   /// Logout user
   Future<void> logout() async {
-    state = state.copyWith(status: AuthStatus.loading);
+    state = AuthState.loading();
 
     final result = await _logoutUsecase();
 
     result.fold(
-      (failure) => state = state.copyWith(
-        status: AuthStatus.error,
-        errorMessage: failure.message,
+      (failure) => state = AuthState.error(failure.message),
+      (_) => state = const AuthState(
+        status: AuthStatus.unauthenticated,
       ),
-      (success) {
-        if (success) {
-          state = state.copyWith(
-            status: AuthStatus.unauthenticated,
-            successMessage: "Logged out successfully",
-            entity: null,
-          );
-        } else {
-          state = state.copyWith(
-            status: AuthStatus.error,
-            errorMessage: "Logout failed",
-          );
-        }
-      },
     );
   }
 
   /// Get current user
   Future<void> getCurrentUser() async {
-    state = state.copyWith(status: AuthStatus.loading);
+    state = AuthState.loading();
 
     final result = await _getCurrentUserUsecase();
 
     result.fold(
-      (failure) => state = state.copyWith(
-        status: AuthStatus.error,
-        errorMessage: failure.message,
-      ),
-      (entity) => state = state.copyWith(
-        status: AuthStatus.authenticated,
-        entity: entity,
-      ),
+      (failure) => state = AuthState.error(failure.message),
+      (entity) => state = AuthState.authenticated(entity),
     );
   }
 }

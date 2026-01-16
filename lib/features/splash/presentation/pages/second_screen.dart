@@ -1,7 +1,7 @@
-// lib/features/onboarding/presentation/pages/second_screen.dart
+import 'package:fashion_store_trendora/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:fashion_store_trendora/core/widgets/my_button.dart';
-import 'package:fashion_store_trendora/features/auth/presentation/pages/login_screen.dart';
+
 
 class SecondScreen extends StatelessWidget {
   const SecondScreen({super.key});

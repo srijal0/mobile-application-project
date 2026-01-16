@@ -1,195 +1,240 @@
-// lib/features/auth/presentation/pages/sign_up_screen.dart
-import 'package:fashion_store_trendora/features/auth/presentation/state/auth_state.dart';
-import 'package:fashion_store_trendora/features/auth/presentation/view_model/auth_viewmodel.dart';
+import 'package:fashion_store_trendora/app/routes/app_route.dart';
+import 'package:fashion_store_trendora/core/utils/snack_bar_utils.dart';
+import 'package:fashion_store_trendora/features/auth/presentation/pages/login_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:fashion_store_trendora/features/onboarding/presentation/pages/first_on_boarding_screen.dart';
-import 'package:fashion_store_trendora/core/widgets/my_button.dart';
-import 'package:fashion_store_trendora/core/widgets/my_input_form_field.dart';
-import 'package:fashion_store_trendora/core/widgets/my_progress_bar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class SignUpScreen extends ConsumerStatefulWidget {
-  const SignUpScreen({super.key});
+class SignUpPage extends StatefulWidget {
+  const SignUpPage({super.key});
 
   @override
-  ConsumerState<SignUpScreen> createState() => _SignUpScreenState();
+  State<SignUpPage> createState() => _SignUpPageState();
 }
 
-class _SignUpScreenState extends ConsumerState<SignUpScreen> {
-  final TextEditingController _fullNameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
-
+class _SignUpPageState extends State<SignUpPage> {
   final _formKey = GlobalKey<FormState>();
 
-  @override
-  void dispose() {
-    _fullNameController.dispose();
-    _emailController.dispose();
-    _passwordController.dispose();
-    _confirmPasswordController.dispose();
-    super.dispose();
-  }
+  final fullNameController = TextEditingController();
+  final phoneController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
 
-  void _handleSignUp() {
+  String selectedCountryCode = '+977';
+  String? selectedCity;
+
+  final cities = ['Kathmandu', 'Pokhara', 'Lalitpur', 'Bhaktapur'];
+
+  final countryCodes = [
+    {'code': '+977', 'flag': '🇳🇵'},
+    {'code': '+91', 'flag': '🇮🇳'},
+    {'code': '+1', 'flag': '🇺🇸'},
+    {'code': '+44', 'flag': '🇬🇧'},
+  ];
+
+  // ✅ Save signup info locally
+  Future<void> _handleSignup() async {
     if (_formKey.currentState!.validate()) {
-      // Navigate to onboarding after successful validation
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => FirstOnBoardingScreen(
-            fullName: _fullNameController.text.trim(),
-            email: _emailController.text.trim(),
-            password: _passwordController.text.trim(),
-            username: _emailController.text.trim().split("@").first,
-          ),
-        ),
-      );
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('saved_email', emailController.text.trim());
+      await prefs.setString('saved_password', passwordController.text);
+
+      SnackbarUtils.showSuccess(context, "Account created successfully!");
+      AppRoutes.pushReplacement(context, const LoginPage());
     }
   }
 
   @override
+  void dispose() {
+    fullNameController.dispose();
+    phoneController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final authState = ref.watch(authViewModelProvider);
-
     return Scaffold(
-      body: SafeArea(
-        child: LayoutBuilder(
-          builder: (BuildContext context, BoxConstraints constraints) {
-            return Padding(
-              padding: const EdgeInsets.all(15),
-              child: Form(
-                key: _formKey,
-                child: SingleChildScrollView(
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                    child: IntrinsicHeight(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          const SizedBox(height: 30),
-                          MyProgressBar(notProgressFlex: 7),
-
-                          const SizedBox(height: 40),
-
-                          const Text(
-                            "Create New Account",
-                            style: TextStyle(
-                              fontSize: 32,
-                              color: Color(0xFF38B120), // Trendora green
-                              fontWeight: FontWeight.bold,
+      backgroundColor: Colors.white,
+      body: Stack(
+        children: [
+          Container(
+            height: 260,
+            decoration: const BoxDecoration(
+              color: Color(0xFFD32F2F),
+            ),
+          ),
+          SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.arrow_back, color: Colors.white),
+                  onPressed: () => Navigator.pop(context),
+                ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 24),
+                  child: Text(
+                    "Create Account",
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 30),
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.all(24),
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(40),
+                        topRight: Radius.circular(40),
+                      ),
+                    ),
+                    child: SingleChildScrollView(
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          children: [
+                            _input("Full Name", fullNameController),
+                            const SizedBox(height: 14),
+                            Row(
+                              children: [
+                                SizedBox(
+                                  width: 110,
+                                  child: DropdownButtonFormField<String>(
+                                    value: selectedCountryCode,
+                                    items: countryCodes.map((c) {
+                                      return DropdownMenuItem(
+                                        value: c['code'],
+                                        child: Text("${c['flag']} ${c['code']}"),
+                                      );
+                                    }).toList(),
+                                    onChanged: (v) {
+                                      setState(() {
+                                        selectedCountryCode = v!;
+                                      });
+                                    },
+                                    decoration:
+                                        const InputDecoration(labelText: "Code"),
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: _input("Phone Number", phoneController),
+                                ),
+                              ],
                             ),
-                          ),
-                          const SizedBox(height: 8),
-                          const Text(
-                            "Enter Username, Email and Password to create new account",
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.black54,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-
-                          const SizedBox(height: 40),
-
-                          MyInputFormField(
-                            controller: _fullNameController,
-                            labelText: "Username",
-                            icon: const Icon(Icons.person),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Please enter your username";
-                              }
-                              return null;
-                            },
-                          ),
-                          const SizedBox(height: 15),
-
-                          MyInputFormField(
-                            controller: _emailController,
-                            labelText: "Email",
-                            inputType: TextInputType.emailAddress,
-                            icon: const Icon(Icons.email),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Please enter your email";
-                              }
-                              if (!value.contains("@")) {
-                                return "Enter a valid email address";
-                              }
-                              return null;
-                            },
-                          ),
-                          const SizedBox(height: 15),
-
-                          MyInputFormField(
-                            controller: _passwordController,
-                            labelText: "Password",
-                            obscureText: true,
-                            icon: const Icon(Icons.key),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Please enter your password";
-                              }
-                              if (value.length < 6) {
-                                return "Password must be at least 6 characters";
-                              }
-                              return null;
-                            },
-                          ),
-                          const SizedBox(height: 15),
-
-                          MyInputFormField(
-                            controller: _confirmPasswordController,
-                            labelText: "Confirm Password",
-                            obscureText: true,
-                            icon: const Icon(Icons.key_off),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Please confirm your password";
-                              }
-                              if (value != _passwordController.text) {
-                                return "Passwords do not match";
-                              }
-                              return null;
-                            },
-                          ),
-
-                          const SizedBox(height: 20),
-
-                          Row(
-                            children: const [
-                              Icon(
-                                Icons.check_box,
-                                color: Color(0xFFFFAE37), // Trendora yellow
-                                size: 28,
+                            const SizedBox(height: 14),
+                            DropdownButtonFormField<String>(
+                              value: selectedCity,
+                              decoration: const InputDecoration(
+                                labelText: "Delivery City",
                               ),
-                              SizedBox(width: 10),
-                              Text("Remember Me", style: TextStyle(fontSize: 15)),
-                            ],
-                          ),
-
-                          const Spacer(),
-
-                          MyButton(
-                            text: authState.status == AuthStatus.loading
-                                ? "Signing Up..."
-                                : "Sign Up",
-                            onPressed: authState.status == AuthStatus.loading
-                                ? null
-                                : _handleSignUp,
-                          ),
-                        ],
+                              items: cities
+                                  .map(
+                                    (city) => DropdownMenuItem(
+                                      value: city,
+                                      child: Text(city),
+                                    ),
+                                  )
+                                  .toList(),
+                              onChanged: (v) {
+                                setState(() {
+                                  selectedCity = v;
+                                });
+                              },
+                              validator: (v) =>
+                                  v == null ? 'Select a city' : null,
+                            ),
+                            const SizedBox(height: 14),
+                            _input("Email", emailController),
+                            const SizedBox(height: 14),
+                            _input("Password", passwordController, obscure: true),
+                            const SizedBox(height: 14),
+                            _input(
+                              "Confirm Password",
+                              confirmPasswordController,
+                              obscure: true,
+                              validator: (v) => v != passwordController.text
+                                  ? 'Passwords do not match'
+                                  : null,
+                            ),
+                            const SizedBox(height: 24),
+                            SizedBox(
+                              width: double.infinity,
+                              height: 52,
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFF2E7D32),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                ),
+                                onPressed: _handleSignup,
+                                child: const Text(
+                                  "Sign Up",
+                                  style: TextStyle(
+                                      fontSize: 18, color: Colors.white),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Text("Already have an account? "),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (_) => const LoginPage()),
+                                    );
+                                  },
+                                  child: const Text(
+                                    "Login",
+                                    style: TextStyle(
+                                      color: Color(0xFFD32F2F),
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            );
-          },
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _input(
+    String hint,
+    TextEditingController controller, {
+    bool obscure = false,
+    String? Function(String?)? validator,
+  }) {
+    return TextFormField(
+      controller: controller,
+      obscureText: obscure,
+      validator: validator ?? (v) => v == null || v.isEmpty ? 'Required' : null,
+      decoration: InputDecoration(
+        hintText: hint,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30),
         ),
       ),
     );
