@@ -32,7 +32,7 @@ class _SignUpPageState extends State<SignUpPage> {
     {'code': '+44', 'flag': '🇬🇧'},
   ];
 
-  // ✅ Save signup info locally
+ 
   Future<void> _handleSignup() async {
     if (_formKey.currentState!.validate()) {
       final prefs = await SharedPreferences.getInstance();
