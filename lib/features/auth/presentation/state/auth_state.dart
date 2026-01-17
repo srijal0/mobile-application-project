@@ -23,9 +23,7 @@ class AuthState extends Equatable {
     this.successMessage,
   });
 
-  /* =======================
-     ✅ STATE CHECK GETTERS
-     ======================= */
+  
 
   bool get isInitial => status == AuthStatus.initial;
 
