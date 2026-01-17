@@ -7,9 +7,9 @@ class AuthApiModel {
   final String username;
   final String? password;
   final String? confirmPassword;
-  // final String? batchId;
+  final String? phoneNumber;
+  final String? address;
   final String? profilePicture;
-  // final BatchApiModel? batch;
 
   AuthApiModel({
     this.authId,
@@ -17,8 +17,10 @@ class AuthApiModel {
     required this.email,
     required this.username,
     this.password,
-    this.profilePicture,
     this.confirmPassword,
+    this.phoneNumber,
+    this.address,
+    this.profilePicture,
   });
 
   // info: To JSON
@@ -28,7 +30,10 @@ class AuthApiModel {
       "email": email,
       "username": username,
       "password": password,
-      "confirmPassword": confirmPassword,
+      // Use password as confirmPassword if confirmPassword is null
+      "confirmPassword": confirmPassword ?? password,
+      "phoneNumber": phoneNumber,
+      "address": address,
       "profilePicture": profilePicture,
     };
   }
@@ -40,6 +45,8 @@ class AuthApiModel {
       fullName: json["username"] as String,
       email: json["email"] as String,
       username: json["username"] as String,
+      phoneNumber: json["phoneNumber"] as String?,
+      address: json["address"] as String?,
       profilePicture: json["profilePicture"] as String?,
     );
   }
@@ -51,6 +58,8 @@ class AuthApiModel {
       fullName: fullName,
       email: email,
       username: username,
+      phoneNumber: phoneNumber,
+      address: address,
       profilePicture: profilePicture,
     );
   }
@@ -63,6 +72,8 @@ class AuthApiModel {
       email: entity.email,
       password: entity.password,
       username: entity.username,
+      phoneNumber: entity.phoneNumber,
+      address: entity.address,
       profilePicture: entity.profilePicture,
     );
   }

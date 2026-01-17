@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:fashion_store_trendora/features/auth/domain/entities/auth_entity.dart';
 
-
 enum AuthStatus {
   initial,
   loading,
@@ -24,7 +23,26 @@ class AuthState extends Equatable {
     this.successMessage,
   });
 
-  /// Create a new state with updated values
+  /* =======================
+     ✅ STATE CHECK GETTERS
+     ======================= */
+
+  bool get isInitial => status == AuthStatus.initial;
+
+  bool get isLoading => status == AuthStatus.loading;
+
+  bool get isAuthenticated => status == AuthStatus.authenticated;
+
+  bool get isUnauthenticated => status == AuthStatus.unauthenticated;
+
+  bool get isRegistered => status == AuthStatus.registered;
+
+  bool get isError => status == AuthStatus.error;
+
+  /* =======================
+     ✅ COPY WITH
+     ======================= */
+
   AuthState copyWith({
     AuthStatus? status,
     AuthEntity? entity,
@@ -36,25 +54,27 @@ class AuthState extends Equatable {
       status: status ?? this.status,
       entity: entity ?? this.entity,
       errorMessage: clearMessage ? null : errorMessage ?? this.errorMessage,
-      successMessage: clearMessage ? null : successMessage ?? this.successMessage,
+      successMessage:
+          clearMessage ? null : successMessage ?? this.successMessage,
     );
   }
 
-  /// Initial empty state
+  /* =======================
+     ✅ FACTORY STATES
+     ======================= */
+
   factory AuthState.initial() {
     return const AuthState(
       status: AuthStatus.initial,
     );
   }
 
-  /// Loading state
   factory AuthState.loading() {
     return const AuthState(
       status: AuthStatus.loading,
     );
   }
 
-  /// Authenticated state
   factory AuthState.authenticated(AuthEntity entity) {
     return AuthState(
       status: AuthStatus.authenticated,
@@ -62,7 +82,13 @@ class AuthState extends Equatable {
     );
   }
 
-  /// Error state
+  factory AuthState.registered(String message) {
+    return AuthState(
+      status: AuthStatus.registered,
+      successMessage: message,
+    );
+  }
+
   factory AuthState.error(String message) {
     return AuthState(
       status: AuthStatus.error,
@@ -70,11 +96,9 @@ class AuthState extends Equatable {
     );
   }
 
-  /// Registered state
-  factory AuthState.registered(String message) {
-    return AuthState(
-      status: AuthStatus.registered,
-      successMessage: message,
+  factory AuthState.unauthenticated() {
+    return const AuthState(
+      status: AuthStatus.unauthenticated,
     );
   }
 

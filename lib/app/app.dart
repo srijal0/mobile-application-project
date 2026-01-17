@@ -46,7 +46,7 @@ class TrendoraApp extends StatelessWidget {
       routes: {
         '/splash': (context) => const SplashScreen(),
         '/login': (context) => const LoginScreen(),
-        '/signup': (context) => const SignupScreen(),
+        '/signup': (context) => const SignUpPage(),
         '/dashboard': (context) => const DashboardScreen(),
       },
     );
