@@ -1,17 +1,21 @@
 import 'package:fashion_store_trendora/app/routes/app_route.dart';
+import 'package:fashion_store_trendora/common/my_snack_bar.dart';
 import 'package:fashion_store_trendora/core/utils/snack_bar_utils.dart';
 import 'package:fashion_store_trendora/features/auth/presentation/pages/login_screen.dart';
+import 'package:fashion_store_trendora/features/auth/presentation/state/auth_state.dart';
+import 'package:fashion_store_trendora/features/auth/presentation/view_model/auth_viewmodel.dart';
+import 'package:fashion_store_trendora/screens/login_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SignUpPage extends StatefulWidget {
+class SignUpPage extends ConsumerStatefulWidget {
   const SignUpPage({super.key});
 
   @override
-  State<SignUpPage> createState() => _SignUpPageState();
+  ConsumerState<SignUpPage> createState() => _SignUpPageState();
 }
 
-class _SignUpPageState extends State<SignUpPage> {
+class _SignUpPageState extends ConsumerState<SignUpPage> {
   final _formKey = GlobalKey<FormState>();
 
   final fullNameController = TextEditingController();
@@ -32,15 +36,21 @@ class _SignUpPageState extends State<SignUpPage> {
     {'code': '+44', 'flag': '🇬🇧'},
   ];
 
- 
+  // =====================================================
+  // ✅ THIS IS THE FUNCTION YOU ASKED TO KEEP
+  // =====================================================
   Future<void> _handleSignup() async {
     if (_formKey.currentState!.validate()) {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('saved_email', emailController.text.trim());
-      await prefs.setString('saved_password', passwordController.text);
-
-      SnackbarUtils.showSuccess(context, "Account created successfully!");
-      AppRoutes.pushReplacement(context, const LoginPage());
+      ref.read(authViewModelProvider.notifier).register(
+        fullName: fullNameController.text.trim(),
+        email: emailController.text.trim(),
+        password: passwordController.text,
+        confirmPassword: confirmPasswordController.text,
+        username: emailController.text.split('@').first,
+        phoneNumber:
+            '$selectedCountryCode${phoneController.text.trim()}',
+        address: selectedCity,
+      );
     }
   }
 
@@ -56,6 +66,25 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
+    // ✅ CRITICAL FIX: This triggers the ViewModel's build() method and initializes all use cases
+    ref.watch(authViewModelProvider);
+    
+    // ✅ Listen Auth State
+   ref.listen<AuthState>(authViewModelProvider, (previous, next) {
+      if (next.status == AuthStatus.error) {
+        showMySnackBar(
+          context: context,
+          message: next.errorMessage ?? "Registration failed",
+        );
+      } else if (next.status == AuthStatus.registered) {
+        showMySnackBar(context: context, message: "Registration successful");
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => LoginScreen()),
+        );
+      }
+    });
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(
@@ -103,80 +132,82 @@ class _SignUpPageState extends State<SignUpPage> {
                           children: [
                             _input("Full Name", fullNameController),
                             const SizedBox(height: 14),
+
                             Row(
                               children: [
                                 SizedBox(
                                   width: 110,
                                   child: DropdownButtonFormField<String>(
                                     value: selectedCountryCode,
+                                    decoration: const InputDecoration(
+                                        labelText: "Code"),
                                     items: countryCodes.map((c) {
                                       return DropdownMenuItem(
                                         value: c['code'],
-                                        child: Text("${c['flag']} ${c['code']}"),
+                                        child:
+                                            Text("${c['flag']} ${c['code']}"),
                                       );
                                     }).toList(),
-                                    onChanged: (v) {
-                                      setState(() {
-                                        selectedCountryCode = v!;
-                                      });
-                                    },
-                                    decoration:
-                                        const InputDecoration(labelText: "Code"),
+                                    onChanged: (v) =>
+                                        setState(() => selectedCountryCode = v!),
                                   ),
                                 ),
                                 const SizedBox(width: 10),
                                 Expanded(
-                                  child: _input("Phone Number", phoneController),
+                                  child: _input(
+                                      "Phone Number", phoneController),
                                 ),
                               ],
                             ),
+
                             const SizedBox(height: 14),
+
                             DropdownButtonFormField<String>(
                               value: selectedCity,
                               decoration: const InputDecoration(
-                                labelText: "Delivery City",
-                              ),
+                                  labelText: "Delivery City"),
                               items: cities
-                                  .map(
-                                    (city) => DropdownMenuItem(
-                                      value: city,
-                                      child: Text(city),
-                                    ),
-                                  )
+                                  .map((city) => DropdownMenuItem(
+                                        value: city,
+                                        child: Text(city),
+                                      ))
                                   .toList(),
-                              onChanged: (v) {
-                                setState(() {
-                                  selectedCity = v;
-                                });
-                              },
+                              onChanged: (v) =>
+                                  setState(() => selectedCity = v),
                               validator: (v) =>
                                   v == null ? 'Select a city' : null,
                             ),
+
                             const SizedBox(height: 14),
                             _input("Email", emailController),
                             const SizedBox(height: 14),
-                            _input("Password", passwordController, obscure: true),
+                            _input("Password", passwordController,
+                                obscure: true),
                             const SizedBox(height: 14),
                             _input(
                               "Confirm Password",
                               confirmPasswordController,
                               obscure: true,
-                              validator: (v) => v != passwordController.text
-                                  ? 'Passwords do not match'
-                                  : null,
+                              validator: (v) =>
+                                  v != passwordController.text
+                                      ? 'Passwords do not match'
+                                      : null,
                             ),
+
                             const SizedBox(height: 24),
+
                             SizedBox(
                               width: double.infinity,
                               height: 52,
                               child: ElevatedButton(
+                                onPressed: _handleSignup, // ✅ IMPLEMENTED
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFF2E7D32),
+                                  backgroundColor:
+                                       Color(0xFFD32F2F),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(30),
                                   ),
                                 ),
-                                onPressed: _handleSignup,
                                 child: const Text(
                                   "Sign Up",
                                   style: TextStyle(
@@ -184,19 +215,19 @@ class _SignUpPageState extends State<SignUpPage> {
                                 ),
                               ),
                             ),
+
                             const SizedBox(height: 20),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 const Text("Already have an account? "),
                                 GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (_) => const LoginPage()),
-                                    );
-                                  },
+                                  onTap: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (_) =>
+                                            const LoginPage()),
+                                  ),
                                   child: const Text(
                                     "Login",
                                     style: TextStyle(
@@ -230,7 +261,8 @@ class _SignUpPageState extends State<SignUpPage> {
     return TextFormField(
       controller: controller,
       obscureText: obscure,
-      validator: validator ?? (v) => v == null || v.isEmpty ? 'Required' : null,
+      validator:
+          validator ?? (v) => v == null || v.isEmpty ? 'Required' : null,
       decoration: InputDecoration(
         hintText: hint,
         border: OutlineInputBorder(

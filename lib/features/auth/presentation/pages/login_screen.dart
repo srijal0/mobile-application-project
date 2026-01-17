@@ -177,7 +177,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
               const SizedBox(height: 30),
 
-              // 🟢 Login Button
+              //  Login Button
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: SizedBox(
@@ -185,7 +185,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   height: 52,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF2E7D32), // Green
+                      backgroundColor: Color(0xFFD32F2F),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),

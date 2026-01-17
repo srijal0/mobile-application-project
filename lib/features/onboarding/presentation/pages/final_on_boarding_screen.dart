@@ -37,7 +37,7 @@ class _FinalOnBoardingScreenState
 
           // ✅ TEMP values (replace when collected in onboarding)
           phoneNumber: "+9770000000",
-          address: "Kathmandu",
+          address: "Kathmandu", confirmPassword: '',
         );
   }
 

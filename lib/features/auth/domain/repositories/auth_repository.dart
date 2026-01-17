@@ -1,4 +1,3 @@
-// lib/features/auth/domain/repositories/auth_repository.dart
 import 'package:dartz/dartz.dart';
 import 'package:fashion_store_trendora/core/error/failures.dart';
 import 'package:fashion_store_trendora/features/auth/domain/entities/auth_entity.dart';
