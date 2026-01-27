@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:fashion_store_trendora/core/api/api_client.dart';
 import 'package:fashion_store_trendora/core/api/api_endpoints.dart';
 import 'package:fashion_store_trendora/core/services/storage/user_session.dart';
@@ -64,24 +65,50 @@ class AuthRemoteDatasource implements IAuthRemoteDatasource {
   // ===================== REGISTER =====================
   @override
   Future<AuthApiModel> register(AuthApiModel user) async {
+    print("🌐 Making API call to register user: ${user.email}");
+    
     final response = await _apiClient.post(
       ApiEndpoints.userRegister,
       data: user.toJson(),
     );
 
+    print("📥 Registration API Response: ${response.data}");
+    print("📊 Status Code: ${response.statusCode}");
+
     final responseData = response.data;
 
-    // If backend returns non-JSON, just return input user
+    // ✅ FIX: Check if response is successful
     if (responseData is! Map<String, dynamic>) {
+      print("❌ Response is not a valid JSON object");
+      throw DioException(
+        requestOptions: response.requestOptions,
+        response: response,
+        type: DioExceptionType.badResponse,
+        error: "Invalid response format from server",
+      );
+    }
+
+    // ✅ FIX: Check if registration was successful
+    if (responseData["success"] == true) {
+      print("✅ Registration successful!");
+      
+      if (responseData["data"] != null) {
+        final userData = responseData["data"] as Map<String, dynamic>;
+        return AuthApiModel.fromJson(userData);
+      }
+      
+      // Return the original user if no data is returned but success is true
       return user;
     }
 
-    if (responseData["success"] == true && responseData["data"] != null) {
-      final userData = responseData["data"] as Map<String, dynamic>;
-      return AuthApiModel.fromJson(userData);
-    }
-
-    return user;
+    // ✅ FIX: If success is false, throw an error
+    print("❌ Registration failed with message: ${responseData["message"]}");
+    throw DioException(
+      requestOptions: response.requestOptions,
+      response: response,
+      type: DioExceptionType.badResponse,
+      error: responseData["message"] ?? "Registration failed",
+    );
   }
 
   @override

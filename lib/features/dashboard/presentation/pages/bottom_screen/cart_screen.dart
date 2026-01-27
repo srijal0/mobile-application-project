@@ -1,6 +1,6 @@
-import 'package:fashion_store_trendora/cart_data.dart';
+import 'package:fashion_store_trendora/features/cart/presentation/cart_data.dart';
 import 'package:flutter/material.dart';
-import 'payment_screen.dart';
+import '../../../../cart/presentation/payment_screen.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
