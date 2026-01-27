@@ -3,7 +3,8 @@ import 'package:fashion_store_trendora/core/utils/snack_bar_utils.dart';
 import 'package:fashion_store_trendora/features/auth/presentation/pages/sign_up_screen.dart';
 import 'package:fashion_store_trendora/features/auth/presentation/state/auth_state.dart';
 import 'package:fashion_store_trendora/features/auth/presentation/view_model/auth_viewmodel.dart';
-import 'package:fashion_store_trendora/screens/dashboard_screen.dart';
+import 'package:fashion_store_trendora/features/dashboard/presentation/pages/dashboard_screen.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

@@ -1,6 +1,6 @@
-import 'package:fashion_store_trendora/cart_data.dart';
+import 'package:fashion_store_trendora/features/cart/presentation/cart_data.dart';
 import 'package:flutter/material.dart';
-import 'cart_screen.dart';
+import '../../dashboard/presentation/pages/bottom_screen/cart_screen.dart';
 
 class ProductDetailScreen extends StatelessWidget {
   final String image;

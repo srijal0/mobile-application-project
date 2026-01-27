@@ -64,63 +64,106 @@ class _HomeScreenState extends State<HomeScreen> {
         .toList();
   }
 
+  // ✅ Handle adding to cart
+  void _addToCart(Map<String, dynamic> product) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('${product['name']} added to cart!'),
+        backgroundColor: const Color(0xFFDA1B2B),
+        duration: const Duration(seconds: 2),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+
+    // TODO: Implement actual cart logic here
+    // Example: ref.read(cartProvider.notifier).addItem(product);
+  }
+
+  // ✅ Handle product tap to view details
+  void _viewProductDetails(Map<String, dynamic> product) {
+    // TODO: Navigate to product details page
+    // Example: Navigator.push(context, MaterialPageRoute(builder: (_) => ProductDetailScreen(product: product)));
+    
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Viewing ${product['name']}'),
+        duration: const Duration(seconds: 1),
+      ),
+    );
+  }
+
   Widget buildProductCard(Map<String, dynamic> product) {
-    return SizedBox(
-      width: 150,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: Image.asset(
-              product['image'],
-              width: 150,
-              height: 100,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return const Icon(Icons.image_not_supported, size: 80, color: Colors.grey);
-              },
+    return GestureDetector(
+      onTap: () => _viewProductDetails(product),
+      child: SizedBox(
+        width: 150,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // ✅ Product Image (tappable)
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.asset(
+                product['image'],
+                width: 150,
+                height: 100,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return const Icon(Icons.image_not_supported, size: 80, color: Colors.grey);
+                },
+              ),
             ),
-          ),
-          const SizedBox(height: 4),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              if (product['isNew'])
-                Flexible(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF38B120),
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: const Text(
-                      "New",
-                      style: TextStyle(color: Colors.white, fontSize: 10),
-                      overflow: TextOverflow.ellipsis,
+            const SizedBox(height: 4),
+            
+            // ✅ New Badge & Cart Button
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                if (product['isNew'])
+                  Flexible(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF38B120),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: const Text(
+                        "New",
+                        style: TextStyle(color: Colors.white, fontSize: 10),
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                   ),
+                
+                // ✅ Cart Button (tappable)
+                GestureDetector(
+                  onTap: () => _addToCart(product),
+                  child: const CircleAvatar(
+                    radius: 14,
+                    backgroundColor: Color(0xFFDA1B2B),
+                    child: Icon(Icons.shopping_cart, size: 16, color: Colors.white),
+                  ),
                 ),
-              const CircleAvatar(
-                radius: 14,
-                backgroundColor: Color(0xFFDA1B2B),
-                child: Icon(Icons.shopping_cart, size: 16, color: Colors.white),
-              ),
-            ],
-          ),
-          const SizedBox(height: 4),
-          Text(
-            product['name'],
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
-            overflow: TextOverflow.ellipsis,
-            maxLines: 1,
-          ),
-          Text(
-            "Rs.${product['price'].toInt()}",
-            style: const TextStyle(color: Colors.grey, fontSize: 12),
-          ),
-        ],
+              ],
+            ),
+            const SizedBox(height: 4),
+            
+            // Product Name
+            Text(
+              product['name'],
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+            ),
+            
+            // Product Price
+            Text(
+              "Rs.${product['price'].toInt()}",
+              style: const TextStyle(color: Colors.grey, fontSize: 12),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -160,6 +203,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ),
+        const SizedBox(height: 16),
       ],
     );
   }
@@ -173,22 +217,42 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           child: Column(
             children: [
+              // ✅ Top Bar
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
-                  Icon(Icons.menu, size: 26),
-                  CircleAvatar(
-                    radius: 18,
-                    backgroundImage: AssetImage('assets/images/dp.png'),
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.menu, size: 26),
+                    onPressed: () {
+                      // TODO: Open drawer or menu
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Menu tapped')),
+                      );
+                    },
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      // TODO: Navigate to profile
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Profile tapped')),
+                      );
+                    },
+                    child: const CircleAvatar(
+                      radius: 18,
+                      backgroundImage: AssetImage('assets/images/dp.png'),
+                    ),
                   ),
                 ],
               ),
               const SizedBox(height: 12),
+              
               const Text(
                 "Explore stylish clothes for you",
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 12),
+              
+              // Search Bar
               TextField(
                 onChanged: (value) {
                   setState(() => searchQuery = value);
@@ -206,6 +270,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               const SizedBox(height: 12),
+              
+              // Product Sections
               ...sections.entries
                   .map((e) => horizontalSection(e.key, e.value))
                   .toList(),
