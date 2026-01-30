@@ -6,6 +6,7 @@ class AuthEntity extends Equatable {
   final String email;
   final String username;
   final String? password;
+  final String? confirmPassword;
   final String? profilePicture;
   final String? phoneNumber;
   final String? address;
@@ -16,6 +17,7 @@ class AuthEntity extends Equatable {
     required this.email,
     required this.username,
     this.password,
+    this.confirmPassword,
     this.profilePicture,
     this.phoneNumber,
     this.address,
@@ -28,6 +30,7 @@ class AuthEntity extends Equatable {
         email,
         username,
         password,
+        confirmPassword,
         profilePicture,
         phoneNumber,
         address,
