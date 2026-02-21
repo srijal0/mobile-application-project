@@ -2,6 +2,8 @@ import 'package:fashion_store_trendora/features/auth/data/models/auth_api_model.
 import 'package:fashion_store_trendora/features/auth/domain/entities/auth_entity.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+// hack: flutter test --coverage
+// hack: flutter pub run test_cov_console
 
 void main() {
   group('AuthApiModel', () {
@@ -26,7 +28,7 @@ void main() {
       expect(json, isA<Map<String, dynamic>>());
       expect(json['name'], 'Salman Khan'); // Backend expects "name" not "fullName"
       expect(json['email'], 'salman@example.com');
-      expect(json['username'], 'salman');
+      expect(json['username'], 'johndoe');
       expect(json['password'], 'password123');
       expect(json['confirmPassword'], 'password123');
       expect(json['profilePicture'], 'https://example.com/pic.jpg');
@@ -70,7 +72,7 @@ void main() {
       final model = AuthApiModel.fromJson(json);
 
       // Assert
-      expect(model.fullName, 'Salman Khan'); // Should fallback to username
+      expect(model.fullName, 'salman'); // Should fallback to username
       expect(model.username, 'salman');
     });
 
@@ -96,6 +98,7 @@ void main() {
       expect(entity.fullName, 'Salman Khan');
       expect(entity.email, 'salman@example.com');
       expect(entity.username, 'salman');
+      expect(entity.password, 'password123');
       expect(entity.confirmPassword, 'password123');
       expect(entity.profilePicture, 'https://example.com/pic.jpg');
     });

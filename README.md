@@ -1,16 +1,3 @@
-# fashion_store_trendora
+# Trendora – Fashion Shopping Mobile App
 
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Trendora is a cross-platform mobile application developed using Flutter and Dart that allows users to browse trending fashion products, manage their shopping cart, and personalize their experience. The app demonstrates clean MVVM architecture, responsive design for multiple screen sizes, local data persistence, and device feature integration such as camera usage. It is designed to provide a smooth and modern shopping experience while showcasing best practices in mobile application development, testing, and version control.
