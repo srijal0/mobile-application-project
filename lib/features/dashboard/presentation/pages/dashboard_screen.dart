@@ -17,17 +17,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
   List<Widget> lstBottomScreen = [
     const HomeScreen(),
     const CartScreen(),
-    //  FIXED: Added required parameters for ProfileScreen
     const ProfileScreen(
-      fullName: 'Shreejal Shrestha',        // Replace with actual user data
-      username: 'shreejal',          // Replace with actual user data
-      email: 'shreejal@example.com',    // Replace with actual user data
-      password: 'shreejal123',      // Replace with actual user data
+      fullName: 'Shreejal Shrestha',
+      username: 'shreejal',
+      email: 'shreejal@example.com',
+      password: 'shreejal123',
     ),
-    // FIXED: Added required userName parameter for AboutScreen
-    const AboutScreen(
-      userName: 'Shreejal Shrestha',  // Replace with actual user data
-    ),
+    const AboutScreen(), // No parameters needed - uses Riverpod
   ];
 
   @override
