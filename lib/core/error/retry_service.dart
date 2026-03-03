@@ -26,19 +26,14 @@ class RetryService {
       } on Exception catch (e) {
         lastException = e;
 
-        // Check if we should retry this exception
-        if (retryIf != null && !retryIf(e)) {
-          rethrow;
-        }
+        // Check if we should NOT retry this exception
+        final shouldNotRetry = (retryIf != null && !retryIf(e)) ||
+            e is AuthenticationException ||
+            e is ValidationException;
 
-        // Don't retry on certain exceptions
-        if (e is AuthenticationException || e is ValidationException) {
-          rethrow;
-        }
-
-        // If we've exhausted retries, throw
-        if (attempt == maxRetries) {
-          rethrow;
+        // If this is the max retry or we shouldn't retry, throw
+        if (attempt == maxRetries || shouldNotRetry) {
+          throw e;
         }
 
         // Wait before retrying

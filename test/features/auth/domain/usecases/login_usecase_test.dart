@@ -7,6 +7,8 @@ import 'package:fashion_store_trendora/features/auth/domain/entities/auth_entity
 import 'package:fashion_store_trendora/features/auth/domain/repositories/auth_repository.dart';
 import 'package:fashion_store_trendora/features/auth/domain/usecases/login_usecase.dart';
 
+import 'auth_usecase_test.mocks.dart';
+
 @GenerateMocks([IAuthRepository])
 void main() {
   late LoginUsecase loginUsecase;

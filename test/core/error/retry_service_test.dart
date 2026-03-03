@@ -86,11 +86,13 @@ void main() {
       }
 
       // Act & Assert
-      expect(
-        () => retryService.retry(operation),
-        throwsA(isA<ConnectionTimeoutException>()),
-      );
-      expect(callCount, equals(3)); // 1 initial + 2 retries
+      try {
+        await retryService.retry(operation);
+        fail('Should have thrown ConnectionTimeoutException');
+      } on ConnectionTimeoutException {
+        // Expected
+        expect(callCount, equals(3)); // Should have called 3 times
+      }
     });
 
     test('should respect custom retry condition', () async {
