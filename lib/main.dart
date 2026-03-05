@@ -34,11 +34,21 @@ void main() async {
       ),
     );
 
-    // 🔄 Set preferred orientations (optional - remove if you want landscape support)
-    await SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
+    // ✅ Adaptive orientation: portrait-only on phones, all orientations on tablets
+    final view = WidgetsBinding.instance.platformDispatcher.views.first;
+    final size = view.physicalSize / view.devicePixelRatio;
+    final isTablet = size.shortestSide >= 600;
+
+    if (isTablet) {
+      // Tablets: allow all orientations so full screen is used
+      await SystemChrome.setPreferredOrientations([]);
+    } else {
+      // Phones: portrait only
+      await SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+      ]);
+    }
 
     print("✅ All services initialized. Starting app...");
 
@@ -56,7 +66,7 @@ void main() async {
     print("❌ FATAL ERROR during app initialization:");
     print("Error: $e");
     print("StackTrace: $stackTrace");
-    
+
     // You could show an error screen here or rethrow
     rethrow;
   }
