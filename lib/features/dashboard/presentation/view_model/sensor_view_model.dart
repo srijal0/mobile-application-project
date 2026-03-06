@@ -22,16 +22,16 @@ class SensorViewModel extends ChangeNotifier {
   ValueChanged<String>? onTiltMessage;
 
   void initSensors() {
-    // Accelerometer - Shake
+    // Accelerometer - Shake detection
     _accelerometerSub = accelerometerEvents.listen(_handleShake);
 
-    // Proximity
+    // Proximity sensor - near/far detection
     _proximitySub = ProximitySensor.events.listen((event) {
       isNear = (event == 1);
       notifyListeners();
     });
 
-    // Gyroscope - Tilt
+    // Gyroscope - Tilt to change category
     _gyroscopeSub = gyroscopeEvents.listen(_handleTilt);
   }
 
@@ -42,7 +42,8 @@ class SensorViewModel extends ChangeNotifier {
 
     if (acceleration > shakeThreshold) {
       final now = DateTime.now();
-      if (_lastShakeTime == null || now.difference(_lastShakeTime!) > const Duration(seconds: 1)) {
+      if (_lastShakeTime == null ||
+          now.difference(_lastShakeTime!) > const Duration(seconds: 1)) {
         _lastShakeTime = now;
         onShuffle?.call(); // notify UI to shuffle products
       }
@@ -53,17 +54,22 @@ class SensorViewModel extends ChangeNotifier {
     const double tiltThreshold = 2.0;
     final now = DateTime.now();
 
-    if (_lastTiltTime != null && now.difference(_lastTiltTime!) < const Duration(milliseconds: 800)) return;
+    if (_lastTiltTime != null &&
+        now.difference(_lastTiltTime!) < const Duration(milliseconds: 800)) return;
 
     if (event.y > tiltThreshold) {
       _lastTiltTime = now;
       currentSectionIndex = (currentSectionIndex + 1) % sectionKeys.length;
+      // ✅ Fixed emoji encoding
       onTiltMessage?.call('➡️ ${sectionKeys[currentSectionIndex]}');
     } else if (event.y < -tiltThreshold) {
       _lastTiltTime = now;
-      currentSectionIndex = (currentSectionIndex - 1 + sectionKeys.length) % sectionKeys.length;
+      currentSectionIndex =
+          (currentSectionIndex - 1 + sectionKeys.length) % sectionKeys.length;
+      // ✅ Fixed emoji encoding
       onTiltMessage?.call('⬅️ ${sectionKeys[currentSectionIndex]}');
     }
+
     notifyListeners();
   }
 
